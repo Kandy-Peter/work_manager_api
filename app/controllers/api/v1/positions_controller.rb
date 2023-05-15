@@ -45,6 +45,6 @@ class Api::V1::PositionsController < ApplicationController
   end
 
   def position_params
-    params.require(:position).permit(:name)
+    params.require(:position).permit(:name, :organization_id)
   end
 end

@@ -12,13 +12,13 @@ class Ability
         can :manage, Organization, id: user.organization_id
         can :manage, Position, organization_id: user.organization_id
         can [:update_role], User, organization_id: user.organization_id, role: ['employee', 'admin', 'manager']
-        cannot[:destroy], Organization, id: user.organization_id
       elsif user.employee?
         can :read, Position, organization_id: user.organization_id
         can [:read, :update], User, id: user.id
       elsif user.manager?
         can :manage, Position, organization_id: user.organization_id
-        can [:read, :update], User, id: user.id
+        can [:read, :update, :me], User, id: user.id
       end
+    end
   end
 end

@@ -54,6 +54,6 @@ class Api::V1::OrganizationsController < ApplicationController
   end
 
   def organization_params
-    params.require(:organization).permit(:name, :address, :description)
+    params.require(:organization).permit(:name, :country, :organization_type)
   end
 end

@@ -2,7 +2,7 @@ module Api
   module V1
     class RegistrationsController < Devise::RegistrationsController
       respond_to :json
-      # before_action :generate_jti, only: [:create]
+      skip_before_action :authenticate_user_with_token, only: [:create]
 
       def create
         user = User.new(sign_up_params)

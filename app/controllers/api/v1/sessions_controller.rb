@@ -2,6 +2,7 @@ module Api
   module V1
     class SessionsController < Devise::SessionsController
       respond_to :json
+      skip_before_action :authenticate_user_with_token, only: [:create]
 
       def create
         user = User.find_by_email(sign_in_params[:email])

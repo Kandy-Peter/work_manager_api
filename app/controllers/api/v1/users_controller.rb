@@ -2,7 +2,6 @@ module Api
   module V1
     class UsersController < ApplicationController
       rescue_from ActiveRecord::RecordNotFound, with: :not_found
-      before_action :authenticate_user_with_token, only: [:me, :search, :show, :update, :follow, :unfollow, :following, :followers]
       before_action :set_user, only: [:update, :destroy, :follow, :unfollow, :followers, :following, :user_posts]
       before_action :set_user_by_username, only: [:show_by_username]
       authorize_resource
