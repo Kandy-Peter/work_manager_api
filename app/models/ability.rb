@@ -13,27 +13,22 @@ class Ability
         can :manage, :all
         # except create new admin and orgranisation
         cannot :create, User, role: 'admin'
-        cannot :create, Organisation
+        cannot [:create, :destroy], Organisation
       end
 
       if user.manager?
-        can :manage, User, country: user.country
+        can :read, User, user: { department: user.department }
+        can [:read, :update], Position, user: { department: user.department }
+        cannot :manage, [User, Organization]
       end
 
       if user.employee?
-        can :read, User, country: user.country
+        can [:read, :update], User, id: user.id
+        can [:read, :update], Position, user_ids: user.id
       end
 
       if user.super_admin?
-        # this is for super admin only, super is the one to set admin role
-        # can create new admin, manager, employee, and create orgranisation
         can :manage, :all
-        can :create, User
-        can :create, Organisation
-
-        # can manage all users, organisations, and all countries
-        can :manage, User
-        can :manage, Organisation
       end
   end
 end

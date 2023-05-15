@@ -13,5 +13,7 @@ super_admin.first_name = ENV['SUPER_ADMIN_FIRST_NAME']
 super_admin.last_name = ENV['SUPER_ADMIN_LAST_NAME']
 super_admin.username = ENV['SUPER_ADMIN_USERNAME']
 super_admin.is_admin = true
+super_admin.positions << Position.create!(name: "CEO")
+super_admin.positions << Position.create!(name: "HR")
 super_admin.role = :super_admin
 super_admin.save!

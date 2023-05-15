@@ -1,16 +1,27 @@
 class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
 
+  # Devise configurations
+  #**********************
   devise :database_authenticatable, :registerable, :validatable, :recoverable, :rememberable, :trackable,
         :jwt_authenticatable, jwt_revocation_strategy: self
 
   before_validation :default_role, on: :create
 
+  # **** ENUMS *****
   enum role: { employee: 0, manager: 1, admin: 2, super_admin: 3 }
 
   mount_uploader :avatar, ImageUploader
 
+  #***SCOPES******
+
   scope :search, ->(query) { query.present? ? where("username ILIKE ? OR first_name ILIKE ? OR last_name ILIKE ?", "%#{query}%", "%#{query}%", "%#{query}%") : none }
+  
+  #******* RELATIONSHIPS *********
+
+  has_and_belongs_to_many :positions
+
+  #*********VALIDATIONS***********
 
   validates :first_name, :last_name, :username, :email, :role, presence: true
   validates :username, uniqueness: true, length: { minimum: 3, maximum: 50 }
@@ -19,7 +30,7 @@ class User < ApplicationRecord
                               "must be at least 8 characters and include one uppercase letter, one lowercase letter, and one digit" 
                               },
                               if: :password_required?
-  
+  #***** AUTH METHODES *******
   def after_jwt_authentication
     self.role = :super_admin
   end
