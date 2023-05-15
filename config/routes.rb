@@ -8,7 +8,9 @@ Rails.application.routes.draw do
 
       get '/search', to: 'users#search'
       
-      resources :users 
+      resources :users
+      resources :positions
+      resources :organizations
     end
   end
   

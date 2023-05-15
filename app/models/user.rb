@@ -20,6 +20,7 @@ class User < ApplicationRecord
   #******* RELATIONSHIPS *********
 
   has_and_belongs_to_many :positions
+  belongs_to :organisation, optional: true
 
   #*********VALIDATIONS***********
 
