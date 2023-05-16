@@ -8,5 +8,6 @@ class CreateDepartments < ActiveRecord::Migration[7.0]
     end
 
     add_reference :departments, :organization, foreign_key: true
+    add_index :departments, :name, unique: true
   end
 end

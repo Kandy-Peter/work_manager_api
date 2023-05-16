@@ -7,6 +7,12 @@ module Api
       authorize_resource
 
       def me
+        salaries = Salary.employee_salary(id: current_user.id, organization_id: current_user.organization_id)
+        # the actual salary is the last amount in the array of salaries
+        actual_salary = salaries.last['salary']
+        @current_user.salary = actual_salary
+        @current_user.save
+
         render json: @current_user, serializer: UserSerializer, status: :ok
       end
 
