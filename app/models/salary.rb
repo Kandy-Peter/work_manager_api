@@ -5,7 +5,7 @@ class Salary < ApplicationRecord
   validates :amount, :date, presence: true
 
   def self.employee_salary(id: nil, month: nil, year: nil, organization_id: nil)
-    salaries = Salary.where(user_id: id, organization_id: organization_id)
+    salaries = Salary.where(user_id: id, organization_id: organization_id).order(date: :asc)
     array = []
   
     if month.present? && year.present?
@@ -56,6 +56,13 @@ class Salary < ApplicationRecord
     end
 
     last_salaries
+  end
+
+  def self.last_salary(id: nil, organization_id: nil)
+    salary = Salary.where(user_id: id, organization_id: organization_id).order(date: :desc).first
+    return 0.00 unless salary
+
+    salary.amount
   end
 
 end
