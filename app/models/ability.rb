@@ -10,12 +10,14 @@ class Ability
         can :manage, :all
       elsif user.admin?
         can :manage, Organization, id: user.organization_id
+        can :manage, Department, organization_id: user.organization_id
         can :manage, Position, organization_id: user.organization_id
         can [:update_role], User, organization_id: user.organization_id, role: ['employee', 'admin', 'manager']
       elsif user.employee?
         can :read, Position, organization_id: user.organization_id
         can [:read, :update], User, id: user.id
       elsif user.manager?
+        can :manage, Department, organization_id: user.organization_id
         can :manage, Position, organization_id: user.organization_id
         can [:read, :update, :me], User, id: user.id
       end
