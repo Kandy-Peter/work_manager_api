@@ -7,6 +7,8 @@ class User < ApplicationRecord
         :jwt_authenticatable, jwt_revocation_strategy: self
 
   before_validation :default_role, on: :create
+  after_initialize :update_user_salary
+
 
   # **** ENUMS *****
   enum role: { employee: 0, manager: 1, admin: 2, super_admin: 3 }
@@ -18,9 +20,9 @@ class User < ApplicationRecord
   scope :search, ->(query) { query.present? ? where("username ILIKE ? OR first_name ILIKE ? OR last_name ILIKE ?", "%#{query}%", "%#{query}%", "%#{query}%") : none }
   
   #******* RELATIONSHIPS *********
-
-  has_and_belongs_to_many :positions
+  has_and_belongs_to_many :departments
   belongs_to :organisation, optional: true
+  has_many :salaries
 
   #*********VALIDATIONS***********
 
@@ -34,6 +36,11 @@ class User < ApplicationRecord
   #***** AUTH METHODES *******
   def after_jwt_authentication
     self.role = :super_admin
+  end
+
+  def update_user_salary
+    salary = Salary.last_salary(id: self.id, organization_id: self.organization_id)
+    self.salary = salary || 0
   end
 
   def generate_jwt_token

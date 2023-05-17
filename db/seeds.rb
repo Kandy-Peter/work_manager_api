@@ -6,14 +6,32 @@
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
 
-# Create super admin
-super_admin = User.find_or_initialize_by(email: ENV['SUPER_ADMIN_EMAIL'])
-super_admin.password = ENV['SUPER_ADMIN_PASSWORD']
-super_admin.first_name = ENV['SUPER_ADMIN_FIRST_NAME']
-super_admin.last_name = ENV['SUPER_ADMIN_LAST_NAME']
-super_admin.username = ENV['SUPER_ADMIN_USERNAME']
-super_admin.is_admin = true
-super_admin.positions << Position.create!(name: "CEO")
-super_admin.positions << Position.create!(name: "HR")
-super_admin.role = :super_admin
-super_admin.save!
+# db/seeds.rb
+
+# Load seed files from the seeds folder
+Dir[Rails.root.join('db/seeds/*.rb')].sort.each do |file|
+  load file
+end
+
+users = User.all.where(organization_id: 1)
+department = Department.all.where(organization_id: 1)
+usersId = User.all.where(organization_id: 1).pluck(:id)
+
+users.each do |user|
+  department.sample(2).each do |department|
+    user.departments << department
+  end
+end
+
+# create salaries
+usersId.each do |id|
+  12.times do
+    salary = Salary.create!(
+      user_id: id,
+      amount: Faker::Number.number(digits: 6),
+      date: Faker::Date.between(from: '2014-09-23', to: '2023-04-25'),
+      organization_id: 1
+    )
+    salary.save!
+  end
+end

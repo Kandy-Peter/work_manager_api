@@ -11,6 +11,12 @@ Rails.application.routes.draw do
       resources :users
       resources :positions
       resources :organizations
+      resources :departments
+      resources :salaries do
+        collection do
+          get 'user_salaries', to: 'salaries#user_salaries'
+        end
+      end
     end
   end
   

@@ -10,9 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_15_211421) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_17_102409) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "departments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description", null: false
+    t.string "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "organization_id"
+    t.index ["name"], name: "index_departments_on_name", unique: true
+    t.index ["organization_id"], name: "index_departments_on_organization_id"
+  end
+
+  create_table "departments_users", id: false, force: :cascade do |t|
+    t.bigint "department_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["department_id", "user_id"], name: "index_departments_users_on_department_id_and_user_id"
+    t.index ["user_id", "department_id"], name: "index_departments_users_on_user_id_and_department_id"
+  end
 
   create_table "organizations", force: :cascade do |t|
     t.string "name"
@@ -20,21 +38,27 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_15_211421) do
     t.string "organization_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_organizations_on_name", unique: true
   end
 
   create_table "positions", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "organization_id"
-    t.index ["organization_id"], name: "index_positions_on_organization_id"
+    t.bigint "department_id"
+    t.index ["department_id"], name: "index_positions_on_department_id"
+    t.index ["name"], name: "index_positions_on_name", unique: true
   end
 
-  create_table "positions_users", id: false, force: :cascade do |t|
+  create_table "salaries", force: :cascade do |t|
+    t.decimal "amount", precision: 10, scale: 2
+    t.date "date"
     t.bigint "user_id", null: false
-    t.bigint "position_id", null: false
-    t.index ["position_id", "user_id"], name: "index_positions_users_on_position_id_and_user_id"
-    t.index ["user_id", "position_id"], name: "index_positions_users_on_user_id_and_position_id"
+    t.bigint "organization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_salaries_on_organization_id"
+    t.index ["user_id"], name: "index_salaries_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -70,6 +94,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_15_211421) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "positions", "organizations"
+  add_foreign_key "departments", "organizations"
+  add_foreign_key "positions", "departments"
+  add_foreign_key "salaries", "organizations"
+  add_foreign_key "salaries", "users"
   add_foreign_key "users", "organizations"
 end

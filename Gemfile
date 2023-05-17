@@ -66,4 +66,4 @@ gem 'dotenv-rails'
 
 gem 'rswag'
 gem 'cancancan'
-
+gem 'faker'
