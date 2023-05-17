@@ -13,9 +13,11 @@ Dir[Rails.root.join('db/seeds/*.rb')].sort.each do |file|
   load file
 end
 
-users = User.all.where(organization_id: 1)
-department = Department.all.where(organization_id: 1)
-usersId = User.all.where(organization_id: 1).pluck(:id)
+orgIds = Organization.all.pluck(:id)
+
+users = User.all.where(organization_id: orgIds[0])
+department = Department.all.where(organization_id: orgIds[0])
+usersId = User.all.where(organization_id: orgIds[0]).pluck(:id)
 
 users.each do |user|
   department.sample(2).each do |department|
@@ -30,7 +32,7 @@ usersId.each do |id|
       user_id: id,
       amount: Faker::Number.number(digits: 6),
       date: Faker::Date.between(from: '2014-09-23', to: '2023-04-25'),
-      organization_id: 1
+      organization_id: orgIds[0]
     )
     salary.save!
   end
