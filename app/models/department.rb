@@ -1,4 +1,7 @@
 class Department <ApplicationRecord
+  extend FriendlyId
+  friendly_id :name, use: :slugged
+
   belongs_to :organization
   has_many :positions
   has_and_belongs_to_many :users

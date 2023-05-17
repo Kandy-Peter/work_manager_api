@@ -132,6 +132,8 @@ GEM
     faker (3.1.1)
       i18n (>= 1.8.11, < 2)
     ffi (1.15.5)
+    friendly_id (5.5.0)
+      activerecord (>= 4.0.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
     http-accept (1.7.0)
@@ -306,6 +308,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
+  friendly_id
   image_processing (~> 1.2)
   listen (~> 3.3)
   pg (~> 1.1)

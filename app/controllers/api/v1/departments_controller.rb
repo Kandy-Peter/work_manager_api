@@ -1,11 +1,12 @@
 class Api::V1::DepartmentsController < ApplicationController
   before_action :set_department, only: [:show, :update, :destroy]
+  before_action :set_organization, only: [:index, :create]
   authorize_resource
 
   def index
     # the is a search query
     if params[:q].present?
-      @departments = Department.search(params[:q]).where(organization_id: current_user.organization_id)
+      @departments = Department.search(params[:q]).where(organization_id: @organization)
     else
       @departments = Department.where(organization_id: current_user.organization_id)
     end
@@ -48,6 +49,10 @@ class Api::V1::DepartmentsController < ApplicationController
 
   def set_department
     @department = Department.friendly.find(params[:id])
+  end
+
+  def set_organization
+    @organization = Organization.friendly.find(params[:organization_id])
   end
 
   def department_params

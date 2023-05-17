@@ -2,24 +2,26 @@ Rails.application.routes.draw do
 
   mount Rswag::Ui::Engine => '/'
   mount Rswag::Api::Engine => '/api-docs'
-  
+
   namespace :api do
     namespace :v1 do
 
       get '/search', to: 'users#search'
-      
+
       resources :users
-      resources :positions
-      resources :organizations
-      resources :departments
-      resources :salaries do
-        collection do
-          get 'user_salaries', to: 'salaries#user_salaries'
+      resources :organizations do
+        resources :departments do
+          resources :positions
+        end
+        resources :salaries do
+          collection do
+            get 'user_salaries', to: 'salaries#user_salaries'
+          end
         end
       end
     end
   end
-  
+
   get 'users/index'
   scope :api do
     scope :v1 do
