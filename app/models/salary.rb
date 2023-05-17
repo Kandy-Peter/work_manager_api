@@ -64,5 +64,4 @@ class Salary < ApplicationRecord
 
     salary.amount
   end
-
 end

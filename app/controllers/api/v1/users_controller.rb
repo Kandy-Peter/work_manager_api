@@ -46,10 +46,16 @@ module Api
       end
 
       def update
-        if @user.update(user_params)
+        user_attributes = user_params.except(:departments_attributes)
+
+        if @user.update(user_attributes)
+          if params[:user][:departments_attributes]
+            update_departments(params[:user][:departments_attributes])
+          end
+
           render json: @user, serializer: UserSerializer, status: :ok
         else
-          render_error(@user, :unprocessable_entity)
+          render_error(@user, message: 'User could not be updated', status: :unprocessable_entity)
         end
       end
 
@@ -74,8 +80,13 @@ module Api
         puts('user names', @user.inspect)
       end
 
-      def user_params
-        params.permit(:id, :first_name, :last_name, :email, :avatar, :username, :bio)
+      def update_departments(departments_attributes)
+        departments_attributes.each do |department_attributes|
+          department = Department.find(department_attributes[:id])
+          if department && department.user_ids.include?(@user.id)
+            department.update(position: department_attributes[:position])
+          end
+        end
       end
 
       def not_found
@@ -87,6 +98,25 @@ module Api
         render json: {
           errors: object.errors.full_messages
         }, status: status
+      end
+
+      def user_params
+        params.require(:user).permit(
+          :id,
+          :first_name,
+          :last_name,
+          :email,
+          :avatar,
+          :username,
+          :bio,
+          :salary,
+          :role,
+          :city,
+          :country,
+          :phone_number,
+          :zip,
+          :departments_attributes => [:id, :position]
+        )
       end
     end
   end

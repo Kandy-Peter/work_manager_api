@@ -14,15 +14,10 @@ Dir[Rails.root.join('db/seeds/*.rb')].sort.each do |file|
 end
 
 users = User.all.where(organization_id: 1)
-positions = Position.all.where(organization_id: 1)
 department = Department.all.where(organization_id: 1)
 usersId = User.all.where(organization_id: 1).pluck(:id)
 
 users.each do |user|
-  positions.sample(2).each do |position|
-    user.positions << position
-  end
-# create users departments
   department.sample(2).each do |department|
     user.departments << department
   end

@@ -3,14 +3,14 @@ class Api::V1::PositionsController < ApplicationController
   authorize_resource
 
   def index
-    @positions = Position.where(organization_id: current_user.organization_id)
+    @positions = Position.all()
     render json: @positions
   end
 
   # GET /api/positions/:id
-  def show
-    render json: @position
-  end
+  # def show
+  #   render json: @position
+  # end
 
   # POST /api/positions
   def create
@@ -45,6 +45,6 @@ class Api::V1::PositionsController < ApplicationController
   end
 
   def position_params
-    params.require(:position).permit(:name, :organization_id)
+    params.require(:position).permit(:name, :department_id)
   end
 end

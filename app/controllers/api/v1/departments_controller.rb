@@ -3,13 +3,17 @@ class Api::V1::DepartmentsController < ApplicationController
   authorize_resource
 
   def index
-    @departments = Department.where(organization_id: current_user.organization_id)
-
-    render json: @departments
+    # the is a search query
+    if params[:q].present?
+      @departments = Department.search(params[:q]).where(organization_id: current_user.organization_id)
+    else
+      @departments = Department.where(organization_id: current_user.organization_id)
+    end
+    render json: @departments, include: :positions
   end
 
   def show
-    render json: @department
+    render json: @department, include: :positions
   end
 
   def create
@@ -41,11 +45,12 @@ class Api::V1::DepartmentsController < ApplicationController
   end
 
   private
-    def set_department
-      @department = Department.friendly.find(params[:id])
-    end
 
-    def department_params
-      params.require(:department).permit(:name, :description, :organization_id)
-    end
+  def set_department
+    @department = Department.friendly.find(params[:id])
+  end
+
+  def department_params
+    params.require(:department).permit(:name, :description, :organization_id)
+  end
 end

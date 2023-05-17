@@ -3,6 +3,7 @@ class CreateDepartments < ActiveRecord::Migration[7.0]
     create_table :departments do |t|
       t.string :name, null: false
       t.string :description, null: false
+      t.string :position
 
       t.timestamps
     end
