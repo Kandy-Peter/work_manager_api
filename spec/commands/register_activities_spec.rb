@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RegisterAnomalies do
+describe RegisterActivities do
   def perform(*_args)
     described_class.for(*_args)
   end
