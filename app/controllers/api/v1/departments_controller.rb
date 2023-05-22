@@ -1,16 +1,20 @@
 class Api::V1::DepartmentsController < ApplicationController
   before_action :set_department, only: [:show, :update, :destroy]
-  before_action :set_organization, only: [:index, :create]
-  authorize_resource
+  before_action :set_organization
+  load_and_authorize_resource
 
   def index
-    # the is a search query
-    if params[:q].present?
-      @departments = Department.search(params[:q]).where(organization_id: @organization)
+    @departments = if params[:q].present?
+      Department.search(params[:q]).where(organization_id: @organization).order(created_at: :desc)
     else
-      @departments = Department.where(organization_id: current_user.organization_id)
+      @organization.departments.order(created_at: :desc)
     end
-    render json: @departments, include: :positions
+
+    if @departments.empty?
+      render json: { message: 'No departments found' }, status: :not_found
+    else
+      render json: @departments, include: :positions
+    end
   end
 
   def show
