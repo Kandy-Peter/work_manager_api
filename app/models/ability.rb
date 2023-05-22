@@ -9,7 +9,7 @@ class Ability
       if user.super_admin?
         can :manage, :all
       elsif user.admin?
-        can :manage, Organization, id: user.organization_id
+        can [:read, :update], Organization, organization_id: user.organization_id
         can :manage, Department, organization_id: user.organization_id
         can :manage, Position, organization_id: user.organization_id
         can :manage, Salary, organization_id: user.organization_id
@@ -24,6 +24,10 @@ class Ability
         can :manage, Position, organization_id: user.organization_id
         can [:read, :update, :me], User, id: user.id
         can :manage, Salary, organization_id: user.organization_id
+      else
+        # Unauthorized user or unauthenticated request
+        cannot :manage, :all
+        cannot :read, :all
       end
     end
   end

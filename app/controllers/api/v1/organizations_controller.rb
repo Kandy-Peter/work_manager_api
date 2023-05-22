@@ -1,6 +1,8 @@
 class Api::V1::OrganizationsController < ApplicationController
   before_action :set_organization, only: [:show, :update]
-  authorize_resource
+  load_and_authorize_resource
+
+  # include AccessDeniedHandler
 
   def index
     @organizations = Organization.all
