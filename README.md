@@ -32,14 +32,14 @@ The `WORK MANAGER API` allows you to:
 There are two roles for employees: `admin` and `staff` each one is able to do different things:
 
 |**Feature**| *Admin* | *Manager* | *Simple Employee* |
-|-|-|-|
-|Manage Company(Only: RUD) | Yes | No | No
-|Create and list employees| Yes | Yes | No
-|Manage employees (Only: RUD) | Yes | Yes | Yes (*Only his info and Update, Destroy*)
-|See an employee info| Yes| Yes | Yes (*Only his info*)
-|Register assistances (entries and exits)| Yes| Yes | No
-|List assistances | Yes| Yes | Yes (*Only her assistances*)
-|See journey report*| Yes| Yes | Yes (*Only her report*)
+|-|-|-|-|
+|Manage Company(Only: RUD) | Yes | No | No |
+|Create and list employees| Yes | Yes | No |
+|Manage employees (Only: RUD) | Yes | Yes | Yes (*Only his info and Update, Destroy*) |
+|See an employee info| Yes| Yes | Yes (*Only his info*) |
+|Register assistances (entries and exits)| Yes| Yes | No |
+|List assistances | Yes| Yes | Yes (*Only her assistances*) |
+|See journey report*| Yes| Yes | Yes (*Only her report*) |
 
 `* A 'Journey' is a summary of the daily activity of an employee, it includes assistances, anomalies and worked hours.`
 
