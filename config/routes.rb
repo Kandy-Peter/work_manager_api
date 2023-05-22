@@ -7,12 +7,16 @@ Rails.application.routes.draw do
     namespace :v1 do
 
       get '/search', to: 'users#search'
-
-      resources :users
       resources :organizations do
+        resources :assistances
+        resources :users do
+          resources :assistances, only: [:index, :create]
+        end
+
         resources :departments do
           resources :positions
         end
+
         resources :salaries do
           collection do
             get 'user_salaries', to: 'salaries#user_salaries'

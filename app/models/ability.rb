@@ -13,17 +13,20 @@ class Ability
         can :manage, Department, organization_id: user.organization_id
         can :manage, Position, organization_id: user.organization_id
         can :manage, Salary, organization_id: user.organization_id
-        can [:update_role], User, organization_id: user.organization_id, role: ['employee', 'admin', 'manager']
+        can :manage, User, organization_id: user.organization_id, role: ['employee', 'admin', 'manager']
+        can :manage, Assistance
       elsif user.employee?
         can :read, Position, organization_id: user.organization_id
         can [:read, :update], User, id: user.id
         can :read, Department, organization_id: user.organization_id
         can :read, Salary, user_id: user.id, organization_id: user.organization_id
+        can :manage, Assistance, user_id: user.id
       elsif user.manager?
         can :manage, Department, organization_id: user.organization_id
         can :manage, Position, organization_id: user.organization_id
-        can [:read, :update, :me], User, id: user.id
+        can [:read, :update, :me, :destroy], User, id: user.id
         can :manage, Salary, organization_id: user.organization_id
+        can :manage, Assistance
       else
         # Unauthorized user or unauthenticated request
         cannot :manage, :all
