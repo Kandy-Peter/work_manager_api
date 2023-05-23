@@ -1,0 +1,13 @@
+default: &default
+  max_arrive_time: 08H00
+  min_leave_time: 18H00
+  min_worked_hours: 8
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+  
+production:
+  <<: *default

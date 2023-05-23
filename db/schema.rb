@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_22_102435) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_22_170537) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "absence"
+    t.boolean "arrived_late"
+    t.boolean "worked_too_short"
+    t.boolean "finished_too_early"
+    t.boolean "incomplete_assistances"
+    t.datetime "day"
+    t.uuid "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_activities_on_user_id"
+  end
 
   create_table "assistances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "happened_at"
@@ -115,10 +128,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_22_102435) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "work_days", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "day"
+    t.float "total_hours"
+    t.uuid "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_work_days_on_user_id"
+  end
+
+  add_foreign_key "activities", "users"
   add_foreign_key "assistances", "users"
   add_foreign_key "departments", "organizations"
   add_foreign_key "positions", "departments"
   add_foreign_key "salaries", "organizations"
   add_foreign_key "salaries", "users"
   add_foreign_key "users", "organizations"
+  add_foreign_key "work_days", "users"
 end

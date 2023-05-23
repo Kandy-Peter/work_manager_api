@@ -65,3 +65,5 @@ gem 'rswag'
 gem 'cancancan'
 gem 'friendly_id'
 gem 'uuid'
+gem 'power-types'
+

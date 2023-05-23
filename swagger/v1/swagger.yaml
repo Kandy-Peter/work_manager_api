@@ -1,4 +1,3 @@
----
 openapi: 3.0.1
 info:
   title: API V1
@@ -87,7 +86,7 @@ paths:
       - Authentication
       security:
       - bearer_auth: []
-      summary: Logs out current logged in user
+      summary: Logs out current logged-in user
       description: ''
       operationId: logout
       parameters: []
@@ -100,7 +99,7 @@ paths:
       - Users
       security:
       - bearer_auth: []
-      summary: Returns current logged in user
+      summary: Returns current logged-in user
       description: ''
       operationId: me
       parameters: []
@@ -126,7 +125,7 @@ paths:
       responses:
         default:
           description: Success
-  "/api/v1/search?username={username}":
+  "/api/v1/search":
     get:
       tags:
       - Search
@@ -145,6 +144,152 @@ paths:
       responses:
         default:
           description: Success
+  "/api/v1/organizations/{organization_id}/users/{user_id}/assistances":
+    post:
+      tags:
+      - Organizations
+      - Users
+      - Assistances
+      security:
+      - bearer_auth: []
+      summary: Creates an assistance for a user within an organization
+      operationId: createAssistance
+      parameters:
+      - name: organization_id
+        in: path
+        description: ID of the organization
+        required: true
+        schema:
+          type: string
+      - name: user_id
+        in: path
+        description: ID of the user
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assistance:
+                  type: object
+                  # Add properties for assistance
+        required: true
+      responses:
+        '201':
+          description: Assistance created
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid request
+        '500':
+          description: Internal server error
+  "/api/v1/organizations/{organization_id}/users/{user_id}/assistances":
+    get:
+      tags:
+      - Organizations
+      - Users
+      - Assistances
+      security:
+      - bearer_auth: []
+      summary: Lists all assistances for a user within an organization
+      operationId: listAssistances
+      parameters:
+      - name: organization_id
+        in: path
+        description: ID of the organization
+        required: true
+        schema:
+          type: string
+      - name: user_id
+        in: path
+        description: ID of the user
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+  "/api/v1/organizations/{organization_id}/departments/{department_id}/positions":
+    get:
+      tags:
+      - Organizations
+      - Departments
+      - Positions
+      security:
+      - bearer_auth: []
+      summary: Lists all positions within a department of an organization
+      operationId: listPositions
+      parameters:
+      - name: organization_id
+        in: path
+        description: ID of the organization
+        required: true
+        schema:
+          type: string
+      - name: department_id
+        in: path
+        description: ID of the department
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+  "/api/v1/organizations/{organization_id}/salaries/user_salaries":
+    get:
+      tags:
+      - Organizations
+      - Salaries
+      security:
+      - bearer_auth: []
+      summary: Lists salaries for all users within an organization
+      operationId: listUserSalaries
+      parameters:
+      - name: organization_id
+        in: path
+        description: ID of the organization
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+  "/api/v1/organizations/{organization_id}/reports/{user_id}/journeys":
+    get:
+      tags:
+      - Organizations
+      - Reports
+      security:
+      - bearer_auth: []
+      summary: Retrieves journey report for a user within an organization
+      operationId: getJourneyReport
+      parameters:
+      - name: organization_id
+        in: path
+        description: ID of the organization
+        required: true
+        schema:
+          type: string
+      - name: user_id
+        in: path
+        description: ID of the user
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
 servers:
 - url: http://{localhost}
   variables:

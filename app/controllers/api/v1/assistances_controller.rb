@@ -20,7 +20,7 @@ class Api::V1::AssistancesController < ApplicationController
   private
 
   def assistance_params
-    params.permit(:kind, :happened_at)
+    params.permit(:kind, :happened_at, :user_id)
   end
 
   def set_employee
