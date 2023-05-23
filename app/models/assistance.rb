@@ -43,14 +43,22 @@ class Assistance <ApplicationRecord
   private
 
   def check_previous_assistance
-    previous_assistance = user.assistances.where('happened_at < ?', happened_at).last
-
+    beginning_of_day = happened_at.to_date.beginning_of_day
+    end_of_day = happened_at.to_date.end_of_day
+    previous_assistance = user.assistances.where(happened_at: beginning_of_day..end_of_day)
+                                          .order('happened_at DESC')
+                                          .first
+    if happened_at.to_date > Time.zone.now
+      errors.add(:base, "User cannot have an assistance in the future")
+    end
     if previous_assistance
       if previous_assistance.kind == kind
+        puts "User cannot have two #{kind} in the same day"
         errors.add(:base, "User cannot have two #{kind} without an #{kind == 'in' ? 'out' : 'in'} in the same day")
       elsif previous_assistance.happened_at > happened_at
         errors.add(:base, "User cannot have a #{kind} before an #{previous_assistance.kind}")
-    elsif kind == 'out'
+      end
+    elsif kind == 'out' && previous_assistance.nil?
       errors.add(:base, "User cannot have an exit without any saved entry")
     end
 
