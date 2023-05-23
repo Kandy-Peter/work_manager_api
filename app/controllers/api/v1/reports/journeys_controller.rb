@@ -5,7 +5,19 @@ class Api::V1::Reports::JourneysController < ApplicationController
   def show
     args = { user: @user, start_date: @start_date, end_date: @end_date }
     journeys = GenerateJourneysReport.for(args)
-    render json: serialize(journeys), status: :ok
+    
+    if journeys.empty?
+      render json: { message: 'No journeys found for the user' }, status: :not_found
+    else
+      is_authorized = current_user.organization_id == @user.organization_id
+
+      if (current_user.admin? || current_user.manager? || current_user == @user) && is_authorized || current_user.super_admin?
+        render json: serialize(journeys)
+        puts current_user[:role]  # Assuming you want to print the current user's role in the console
+      else
+        render json: { error: 'Unauthorized Access' }, status: :unauthorized
+      end
+    end
   end
 
   private
