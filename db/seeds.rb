@@ -1,11 +1,3 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
-
 # db/seeds.rb
 
 # Load seed files from the seeds folder
@@ -37,3 +29,24 @@ usersId.each do |id|
     salary.save!
   end
 end
+
+# create activities
+base_date = DateTime.now
+day_hours = [[8, 13, 15, 18], [8.5, 14, 15, 19], [7.5, 12.5, 13.5, 19]]
+user = User.find_by(role: :admin)
+
+day_hours.each_with_index do |hours, index|
+  date = base_date + index.days
+  # Create assistances
+  hours.each_with_index do |hour, hour_index|
+    Assistance.create!(
+      user: user,
+      happened_at: date.beginning_of_day + hour.hours,
+      kind: hour_index.even? ? 'in' : 'out'
+    )
+  end
+
+  # Register anomalities
+  RegisterActivities.for(user: user, day: date)
+end
+

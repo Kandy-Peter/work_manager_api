@@ -5,23 +5,31 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      # add the api version constraint
+      # scope module: :public, constraints: ApiVersion.new('v1', true) do
 
       get '/search', to: 'users#search'
       resources :organizations do
+        #****ASSISTANCES****
         resources :assistances
         resources :users do
           resources :assistances, only: [:index, :create]
         end
 
+        #****DEPARTMENTS****
         resources :departments do
           resources :positions
         end
 
+        #****SALARIES****
         resources :salaries do
           collection do
             get 'user_salaries', to: 'salaries#user_salaries'
           end
         end
+
+        #****USER JOURNEY****
+        get '/reports/:user_id/journeys', to: 'reports/journeys#show', as: 'journey_report'
       end
     end
   end

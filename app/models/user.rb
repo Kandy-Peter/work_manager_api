@@ -23,6 +23,7 @@ class User < ApplicationRecord
   has_and_belongs_to_many :departments
   belongs_to :organisation, optional: true
   has_many :activities
+  has_many :work_days
   has_many :salaries
   has_many :assistances
 
