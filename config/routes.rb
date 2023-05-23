@@ -5,9 +5,6 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      # add the api version constraint
-      # scope module: :public, constraints: ApiVersion.new('v1', true) do
-
       get '/search', to: 'users#search'
       resources :organizations do
         #****ASSISTANCES****
