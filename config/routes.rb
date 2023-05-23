@@ -28,12 +28,7 @@ Rails.application.routes.draw do
         #****USER JOURNEY****
         get '/reports/:user_id/journeys', to: 'reports/journeys#show', as: 'journey_report'
       end
-    end
-  end
 
-  get 'users/index'
-  scope :api do
-    scope :v1 do
       devise_for :users,
                  path: 'auth',
                  path_names: {
@@ -57,4 +52,6 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  get 'users/index'
 end
