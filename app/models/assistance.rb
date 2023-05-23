@@ -1,6 +1,6 @@
 class Assistance <ApplicationRecord
   # ****CALLBACKS****
-  # Calculate worked hours, and activities for every assistance of kind 'out' save
+  before_save :check_previous_assistance
   after_save :set_worked_hours
   after_save :update_user_activities
 
@@ -20,6 +20,8 @@ class Assistance <ApplicationRecord
   # ****RELATIONS****
   belongs_to :user
 
+  # ****METHODS****
+
   # ****Update work hours****
   def set_worked_hours
     if out?
@@ -38,4 +40,20 @@ class Assistance <ApplicationRecord
     end
   end
 
+  private
+
+  def check_previous_assistance
+    previous_assistance = user.assistances.where('happened_at < ?', happened_at).last
+
+    if previous_assistance
+      if previous_assistance.kind == kind
+        errors.add(:base, "User cannot have two #{kind} without an #{kind == 'in' ? 'out' : 'in'} in the same day")
+      elsif previous_assistance.happened_at > happened_at
+        errors.add(:base, "User cannot have a #{kind} before an #{previous_assistance.kind}")
+    elsif kind == 'out'
+      errors.add(:base, "User cannot have an exit without any saved entry")
+    end
+
+    throw(:abort) if errors.any?
+  end
 end
