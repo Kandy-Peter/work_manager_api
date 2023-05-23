@@ -6,6 +6,7 @@ class ApplicationController < ActionController::API
 
   include AccessDeniedHandler
   include ExceptionHandler
+  include PaginationControllerConcern
 
   protected
 

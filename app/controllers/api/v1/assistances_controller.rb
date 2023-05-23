@@ -5,7 +5,8 @@ class Api::V1::AssistancesController < ApplicationController
 
   def index
     @assistances = @employee.assistances.by_day(params[:start_date], params[:end_date])
-    render json: @assistances
+    
+    render_paginated_response(@assistances)
   end
 
   def create
