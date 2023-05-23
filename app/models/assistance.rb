@@ -1,7 +1,8 @@
 class Assistance <ApplicationRecord
   # ****CALLBACKS****
-  # Calculate worked hours for every assistance of kind 'out' save
+  # Calculate worked hours, and activities for every assistance of kind 'out' save
   after_save :set_worked_hours
+  after_save :update_user_activities
 
   # ****SCOPES****
   scope :by_day, ->(start_date, end_date) {
@@ -29,9 +30,12 @@ class Assistance <ApplicationRecord
     end
   end
 
-  # if there to kind "in" records in the same day, update the last one
-  def self.update_in_assistance(user, date)
-    assistance = Assistance.find_by(user: user, kind: :in, happened_at: date.beginning_of_day..date.end_of_day)
-    assistance.update(happened_at: Time.current) if assistance.present?
+  # ****Update user activities****
+  def update_user_activities
+    if out?
+      date = happened_at.getlocal.midnight
+      RegisterActivities.for(user: user, day: date)                         
+    end
   end
+
 end

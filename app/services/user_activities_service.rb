@@ -23,14 +23,14 @@ class UserActivitiesService < PowerTypes::Service.new(:user, :day)
 
   def arrived_late?
     return false if (absence? || !first_entry)
-    limit = day_at(first_entry. happened_at, @config['max_arrive_time'])
-    first_entry. happened_at > limit
+    limit = day_at(first_entry.happened_at, @config['max_arrive_time'])
+    first_entry.happened_at > limit
   end
   
   def finished_too_early?
     return false if (absence? || !last_exit)
-    limit = day_at(last_exit. happened_at, @config['min_leave_time'])
-    last_exit. happened_at < limit
+    limit = day_at(last_exit.happened_at, @config['min_leave_time'])
+    last_exit.happened_at < limit
   end
 
   private 
