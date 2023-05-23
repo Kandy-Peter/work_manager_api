@@ -12,8 +12,7 @@ class Api::V1::Reports::JourneysController < ApplicationController
       is_authorized = current_user.organization_id == @user.organization_id
 
       if (current_user.admin? || current_user.manager? || current_user == @user) && is_authorized || current_user.super_admin?
-        render json: serialize(journeys)
-        puts current_user[:role]  # Assuming you want to print the current user's role in the console
+        render json: serialize(journeys), status: :ok
       else
         render json: { error: 'Unauthorized Access' }, status: :unauthorized
       end
