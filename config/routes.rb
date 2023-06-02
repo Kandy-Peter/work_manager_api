@@ -44,6 +44,7 @@ Rails.application.routes.draw do
                  controllers: {
                    registrations: 'api/v1/registrations',
                    sessions: 'api/v1/sessions',
+                   password_resets: 'api/v1/password_resets'
                  }, defaults: { format: :json }
       devise_scope :user do
         get '/auth/me', to: 'api/v1/users#me', as: :user_root
@@ -52,8 +53,8 @@ Rails.application.routes.draw do
         get '/users/show/:username', to: 'api/v1/users#show_by_username', as: :show_by_username
         put '/auth/users/:id', to: 'api/v1/users#update', as: :update_user
         delete '/auth/users', to: 'api/v1/users#destroy', as: :destroy_user
-        post 'password/forgot', to: 'api/v1/password#forgot'
-        post 'password/reset', to: 'api/v1/password#reset'
+        post 'password_resets', to: 'api/v1/password_resets#create'
+        put 'password_resets/:token', to: 'api/v1/password_resets#update'
       end
     end
   end

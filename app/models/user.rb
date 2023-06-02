@@ -50,10 +50,34 @@ class User < ApplicationRecord
     payload = {
       user_id: id,
       jti: jti,
-      exp: 48.hours.from_now.to_i
+      exp: 24.hours.from_now.to_i
     }
 
     JWT.encode(payload, secret_key)
+  end
+
+  def generate_reset_password_token
+    self.reset_password_token = generate_jwt_token.gsub(/\./, '-')
+    self.reset_password_token_expires_at = 1.day.from_now
+    save(validate: false)
+  end
+
+  def reset_password_token_valid?
+    reset_password_token_expires_at > Time.now
+  end
+
+  def reset_password(password, password_confirmation)
+    puts "password: #{password}"
+    puts "password_confirmation: #{password_confirmation}"
+    if(password != password_confirmation)
+      return false
+    end
+    update(
+      password: password,
+      password_confirmation: password_confirmation,
+      reset_password_token: nil,
+      reset_password_token_expires_at: nil
+    )
   end
 
   private

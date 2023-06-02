@@ -38,6 +38,16 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :user_name => 'f09a1408e665f4',
+    :password => '44b256c8f3bb01',
+    :address => 'sandbox.smtp.mailtrap.io',
+    :domain => 'sandbox.smtp.mailtrap.io',
+    :port => '2525',
+    :authentication => :cram_md5
+  }
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
@@ -62,5 +72,5 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  # config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 end

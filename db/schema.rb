@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_22_170537) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_01_172040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -122,6 +122,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_22_170537) do
     t.string "phone_number", default: ""
     t.string "zip", default: ""
     t.uuid "organization_id"
+    t.datetime "reset_password_token_expires_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti"
     t.index ["organization_id"], name: "index_users_on_organization_id"
