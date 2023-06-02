@@ -66,19 +66,18 @@ class User < ApplicationRecord
     reset_password_token_expires_at > Time.now
   end
 
-  def update_password(password, password_confirmation)
-    if password == password_confirmation
-      update(
-        password: password,
-        password_confirmation: password_confirmation,
-        reset_password_token: nil,
-        reset_password_token_expires_at: nil
-      )
-      puts ("Yay! Your password has been updated successfully!")
-      true
-    else
-      errors.add(:password, "does not match confirmation")
+  def reset_password(password, password_confirmation)
+    puts "password: #{password}"
+    puts "password_confirmation: #{password_confirmation}"
+    if(password != password_confirmation)
+      return false
     end
+    update(
+      password: password,
+      password_confirmation: password_confirmation,
+      reset_password_token: nil,
+      reset_password_token_expires_at: nil
+    )
   end
 
   private

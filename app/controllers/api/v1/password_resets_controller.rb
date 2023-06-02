@@ -17,8 +17,8 @@ class Api::V1::PasswordResetsController < ApplicationController
   def update
     user = User.find_by(reset_password_token: params[:token])
     if user && user.reset_password_token_valid?
-      if user.update_password(params[:password], params[:password_confirmation])
-        render json: { message: 'Password reset successfully' }
+      if user.reset_password(params[:password], params[:password_confirmation])
+        render json: { message: 'Password updated successfully' }
       else
         render json: { error: user.errors.full_messages }, status: :unprocessable_entity
       end
@@ -26,4 +26,6 @@ class Api::V1::PasswordResetsController < ApplicationController
       render json: { error: 'Invalid or expired token' }, status: :unprocessable_entity
     end
   end
+
+  private
 end
