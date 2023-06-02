@@ -17,7 +17,8 @@ class Ability
         can :manage, [WorkDay, Activity, Assistance], user_id: User.where(organization_id: user.organization_id)
       elsif user.employee?
         can :read, Position, organization_id: user.organization_id
-        can [:read, :update], User, id: user.id
+        can [:read, :update, :me], User, id: user.id
+        can :reset_password, User, id: user.id
         can :read, Department, organization_id: user.organization_id
         can :read, Salary, user_id: user.id, organization_id: user.organization_id
         can :manage, Assistance, user_id: user.id
