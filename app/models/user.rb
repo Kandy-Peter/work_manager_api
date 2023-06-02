@@ -83,7 +83,7 @@ class User < ApplicationRecord
   private
 
   def secret_key
-    Rails.application.credentials.secret_key_base || ENV['SECRET_KEY_BASE']
+    ENV['SECRET_KEY_BASE']
   end
 
   def default_role

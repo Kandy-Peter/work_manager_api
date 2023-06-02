@@ -16,13 +16,31 @@ module Api
       end
 
       def destroy
-        current_user&.authentication_token = nil
-        if current_user&.save
-          render json: {status: {code: 200, message: 'Logged out successfully.'}}
+        puts "*****************"
+        puts "*****************"
+        puts "*****************"
+        puts "*****************"
+        secret_key_base = ENV['SECRET_KEY_BASE']
+        token = request.headers['Authorization'].split('Bearer ').last
+
+        puts "token*****************: #{token}"
+        decoded_token = JWT.decode(token, secret_key_base, true, { algorithm: 'HS256' })
+        payload = decoded_token.first
+        
+        if payload.key?('jti')
+          jti = payload['jti'].to_s
+          user = User.find_by(jti: jti)
+          if user.nil?
+            render json: { error: 'Invalid token for the user' }, status: :unauthorized
+          elsif valid_token?(payload, user)
+            user.jti = nil
+            user.save
+            render json: {status: {code: 200, message: 'Logged out successfully.'}}
+          else
+            render json: { error: 'Unauthorized Access' }, status: :unauthorized
+          end
         else
-          render json: {
-            status: {message: "Something went wrong. #{resource.errors.full_messages.to_sentence}"}
-          }, status: :unprocessable_entity
+          render json: { error: 'Unauthorized Access, incorrect token' }, status: :unauthorized
         end
       end
     
