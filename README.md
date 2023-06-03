@@ -64,6 +64,7 @@ Once cloned:
 - Ruby `3.2.1`
 
 ### Environment variables
+- copy the .env.example
 
 **`SCHEMAS_HOST`**
 
