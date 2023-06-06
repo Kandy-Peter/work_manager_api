@@ -21,7 +21,7 @@ class User < ApplicationRecord
   
   #******* RELATIONSHIPS *********
   has_and_belongs_to_many :departments
-  belongs_to :organisation, optional: true
+  belongs_to :organization, optional: true
   has_many :activities
   has_many :work_days
   has_many :salaries

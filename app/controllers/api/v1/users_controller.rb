@@ -2,22 +2,22 @@ module Api
   module V1
     class UsersController < ApplicationController
       rescue_from ActiveRecord::RecordNotFound, with: :not_found
-      before_action :set_user, only: [:update, :destroy, :follow, :unfollow, :followers, :following, :user_posts]
+      before_action :set_user, only: [ :show, :update, :destroy, :show_by_username, :organization_team, :update_role]
       before_action :set_user_by_username, only: [:show_by_username]
-      authorize_resource
+      before_action :set_organization
+      load_and_authorize_resource
 
-      def me
-        salary = Salary.last_salary(id: current_user.id, organization_id: current_user.organization_id)
-
-        actual_salary = salary
-        @current_user.salary = actual_salary
-        @current_user.save
-
-        render json: @current_user, serializer: UserSerializer, status: :ok
+      def profile
+        if current_user && current_user.organization_id == @organization.id
+          render json: current_user, serializer: UserSerializer, status: :ok
+        else
+          render json: { status: { code: 404, message: "User not found for this organization" }}, status: :not_found
+        end
       end
 
-      def all_users
-        @users = User.where(organization_id: current_user.organization_id)
+      def organization_team
+        @users = User.where(organization_id: @organization.id)
+        render json: @users, each_serializer: UserSerializer, status: :ok
       end
 
       def show
@@ -32,12 +32,6 @@ module Api
             message: "User not found"
           }, status: :not_found
         end
-      end
-
-      # Get /users/1/posts
-      def user_posts
-        @posts = @user.posts.all.order(created_at: :desc)
-        render json: @posts, each_serializer: PostSerializer, status: :ok
       end
 
       def search
@@ -80,6 +74,10 @@ module Api
         puts('user names', @user.inspect)
       end
 
+      def set_organization
+        @organization = Organization.friendly.find(params[:organization_id])
+      end
+
       def update_departments(departments_attributes)
         departments_attributes.each do |department_attributes|
           department = Department.find(department_attributes[:id])
@@ -101,7 +99,7 @@ module Api
       end
 
       def user_params
-        params.require(:user).permit(
+        params.permit(
           :id,
           :first_name,
           :last_name,
@@ -109,8 +107,7 @@ module Api
           :avatar,
           :username,
           :bio,
-          :salary,
-          :role,
+          :password,
           :city,
           :country,
           :phone_number,
