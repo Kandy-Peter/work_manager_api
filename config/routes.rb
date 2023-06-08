@@ -51,7 +51,7 @@ Rails.application.routes.draw do
         get '/auth/users', to: 'api/v1/users#index', as: :users
         get '/auth/users/:id', to: 'api/v1/users#show', as: :user
         get '/users/show/:username', to: 'api/v1/users#show_by_username', as: :show_by_username
-        put '/auth/users/:id', to: 'api/v1/users#update', as: :update_user
+        put '/:organization_id/users/:id', to: 'api/v1/users#update', as: :update_user
         delete '/auth/users', to: 'api/v1/users#destroy', as: :destroy_user
         post 'password_resets', to: 'api/v1/password_resets#create'
         put 'password_resets/:token', to: 'api/v1/password_resets#update'

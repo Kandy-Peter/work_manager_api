@@ -88,7 +88,7 @@ module Api
       end
 
       def not_found
-        render json: { error: 'Not Found' }, status: :not_found
+        render json: {status: { code: 404, error: 'Record Not Found' }}, status: :not_found
       end
 
       # Render error message
@@ -112,6 +112,16 @@ module Api
           :country,
           :phone_number,
           :zip,
+          :address,
+          :personal_email,
+          :level_of_education,
+          :field_of_study,
+          :university,
+          :date_of_birth,
+          :national_id,
+          :nationality,
+          :marital_status,
+          :gender,
           :departments_attributes => [:id, :position]
         )
       end

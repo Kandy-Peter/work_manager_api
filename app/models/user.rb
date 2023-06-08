@@ -7,11 +7,12 @@ class User < ApplicationRecord
         :jwt_authenticatable, jwt_revocation_strategy: self
 
   before_validation :default_role, on: :create
-  after_initialize :update_user_salary
+  after_initialize :update_user_salary, :age, if: :new_record?
 
 
   # **** ENUMS *****
   enum role: { employee: 0, manager: 1, admin: 2, super_admin: 3 }
+  enum status: { active: 0, inactive: 1, suspended: 2 }
 
   mount_uploader :avatar, ImageUploader
 
@@ -88,5 +89,20 @@ class User < ApplicationRecord
 
   def default_role
     self.role ||= :employee
+  end
+
+  # get age from birthdate
+  def age
+    now = Time.now.utc.to_date
+    now.year - self.date_of_birth.year - (self.date_of_birth.to_date.change(year: now.year) > now ? 1 : 0)
+  end
+
+  def length_of_service
+    now = Time.now.utc.to_date
+    if self.employment_date.nil?
+      return nil
+    end
+    year = (now.year - self.employment_date.year).to_s
+    month = (now.month - self.employment_date.month).to_s
   end
 end
