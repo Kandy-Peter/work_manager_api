@@ -94,6 +94,9 @@ class User < ApplicationRecord
   # get age from birthdate
   def age
     now = Time.now.utc.to_date
+    if self.date_of_birth.nil?
+      return nil
+    end
     now.year - self.date_of_birth.year - (self.date_of_birth.to_date.change(year: now.year) > now ? 1 : 0)
   end
 

@@ -4,11 +4,12 @@ module Api
       rescue_from ActiveRecord::RecordNotFound, with: :not_found
       before_action :set_user, only: [ :show, :update, :destroy, :show_by_username, :organization_team, :update_role]
       before_action :set_user_by_username, only: [:show_by_username]
-      before_action :set_organization
+      before_action :set_organization, only: [:profile, :organization_team, :update_role, :update]
       load_and_authorize_resource
 
       def profile
         if current_user && current_user.organization_id == @organization.id
+          puts @organization.inspect
           render json: current_user, serializer: UserSerializer, status: :ok
         else
           render json: { status: { code: 404, message: "User not found for this organization" }}, status: :not_found
@@ -43,7 +44,7 @@ module Api
         user_attributes = user_params.except(:departments_attributes)
 
         if @user.update(user_attributes)
-          if params[:user][:departments_attributes]
+          if params[:user] && params[:user][:departments_attributes]
             update_departments(params[:user][:departments_attributes])
           end
 
@@ -75,6 +76,7 @@ module Api
       end
 
       def set_organization
+        puts 'organization', params[:organization_id]
         @organization = Organization.friendly.find(params[:organization_id])
       end
 
@@ -99,7 +101,7 @@ module Api
       end
 
       def user_params
-        params.permit(
+        params.require(:user).permit(
           :id,
           :first_name,
           :last_name,
@@ -122,7 +124,10 @@ module Api
           :nationality,
           :marital_status,
           :gender,
-          :departments_attributes => [:id, :position]
+          :organization_id,
+          :employment_date,
+          :length_of_service,
+          :departments_attributes => [:id, :position],
         )
       end
     end
