@@ -11,18 +11,16 @@ module Api
           response.headers['Authorization'] = "Bearer #{token}"
           render json: {status: {code: 200, message: 'Logged in successfully.'}, data: (UserSerializer.new(user).as_json), token: token}
         else
-          render json: {status: {message: 'Invalid email or password.'}}, status: :unauthorized
+           error_response('Invalid email or password', nil, :unauthorized)
         end
       end
 
       def destroy
         current_user&.authentication_token = nil
         if current_user&.save
-          render json: {status: {code: 200, message: 'Logged out successfully.'}}
+          success_response('Logged out successfully', nil, :ok)
         else
-          render json: {
-            status: {message: "Something went wrong. #{resource.errors.full_messages.to_sentence}"}
-          }, status: :unprocessable_entity
+          error_response('Something went wrong', current_user&.errors, :unprocessable_entity)
         end
       end
     

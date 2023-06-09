@@ -7,6 +7,7 @@ class ApplicationController < ActionController::API
   include AccessDeniedHandler
   include ExceptionHandler
   include PaginationControllerConcern
+  include ResponseHandler
 
   protected
 
@@ -28,14 +29,14 @@ class ApplicationController < ActionController::API
         jti = payload['jti'].to_s
         user = User.find_by(jti: jti)
         if user.nil?
-          render json: { error: 'Invalid token for the user' }, status: :unauthorized
+          error_response('Unauthorized Access, incorrect token', nil, :unauthorized)
         elsif valid_token?(payload, user)
           @current_user = user
         else
-          render json: { error: 'Unauthorized Access' }, status: :unauthorized
+          error_response('Unauthorized Access, incorrect token', nil, :unauthorized)
         end
       else
-        render json: { error: 'Unauthorized Access, incorrect token' }, status: :unauthorized
+        error_response('Unauthorized Access, incorrect token', nil, :unauthorized)
       end
     end
   end

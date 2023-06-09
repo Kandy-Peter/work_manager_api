@@ -1,6 +1,5 @@
 class Api::V1::PasswordResetsController < ApplicationController
   skip_before_action :authenticate_user_with_token, only: [:create, :update]
-  # load_and_authorize_resource :user
 
   def create
     user = User.find_by(email: params[:email])
@@ -8,9 +7,9 @@ class Api::V1::PasswordResetsController < ApplicationController
       user.generate_reset_password_token
       # Send the password reset instructions email with the reset token link
       PasswordResetMailer.with(user: user).reset_instructions.deliver_now
-      render json: { message: 'Password reset instructions sent to your email' }
+      success_response('Reset password instructions sent successfully', nil, :ok)
     else
-      render json: { error: 'User not found' }, status: :not_found
+      error_response('Email address not found. Please check and try again.', nil, :not_found)
     end
   end
 
@@ -18,12 +17,12 @@ class Api::V1::PasswordResetsController < ApplicationController
     user = User.find_by(reset_password_token: params[:token])
     if user && user.reset_password_token_valid?
       if user.reset_password(params[:password], params[:password_confirmation])
-        render json: { message: 'Password updated successfully' }
+        success_response('Password reset successfully', nil, :ok)
       else
-        render json: { error: user.errors.full_messages }, status: :unprocessable_entity
+        error_response('Something went wrong', user.errors, :unprocessable_entity)
       end
     else
-      render json: { error: 'Invalid or expired token' }, status: :unprocessable_entity
+      error_response('Invalid or expired token', nil, :unprocessable_entity)
     end
   end
 

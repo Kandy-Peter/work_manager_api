@@ -16,9 +16,7 @@ module Api
             token: token
           }
         else
-          render json: {
-            status: {message: "Something went wrong. #{user.errors.full_messages.to_sentence}"}
-          }, status: :unprocessable_entity
+          error_response('Something went wrong', user.errors, :unprocessable_entity)
         end
       end
 
