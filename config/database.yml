@@ -29,7 +29,7 @@ test:
   <<: *default
   database: team_work_test
 
-  production:
-    <<: *default
-    url: <%= ENV["HERI_DATABASE_URL"] %>
+production:
+  <<: *default
+  url: <%= ENV["HERI_DATABASE_URL"] %>
 
