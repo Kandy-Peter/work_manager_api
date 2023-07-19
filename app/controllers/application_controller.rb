@@ -18,9 +18,7 @@ class ApplicationController < ActionController::API
 
   def authenticate_user_with_token
     token = extract_token_from_headers(request.headers)
-    if token.nil?
-      render json: { error: 'Unauthorized' }, status: :unauthorized
-    else
+    if token
       decoded_token = JWT.decode(token, nil, false)
       payload = decoded_token.first['jti']
       payload = decoded_token.first
@@ -29,14 +27,14 @@ class ApplicationController < ActionController::API
         jti = payload['jti'].to_s
         user = User.find_by(jti: jti)
         if user.nil?
-          error_response('Unauthorized Access, incorrect token', nil, :unauthorized)
+          error_response('Unauthorized Access', nil, :unauthorized)
         elsif valid_token?(payload, user)
           @current_user = user
         else
           error_response('Unauthorized Access, incorrect token', nil, :unauthorized)
         end
       else
-        error_response('Unauthorized Access, incorrect token', nil, :unauthorized)
+        error_response('Unauthorized Access or incorrect token', nil, :unauthorized)
       end
     end
   end

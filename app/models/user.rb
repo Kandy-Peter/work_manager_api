@@ -38,9 +38,9 @@ class User < ApplicationRecord
                               },
                               if: :password_required?
   #***** AUTH METHODES *******
-  def after_jwt_authentication
-    self.role = :super_admin
-  end
+  # def after_jwt_authentication
+  #   self.role = :super_admin
+  # end
 
   def update_user_salary
     salary = Salary.last_salary(id: self.id, organization_id: self.organization_id)
@@ -79,6 +79,10 @@ class User < ApplicationRecord
       reset_password_token: nil,
       reset_password_token_expires_at: nil
     )
+  end
+
+  def has_role?(role)
+    self.role == role
   end
 
   private
