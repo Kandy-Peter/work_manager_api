@@ -1,17 +1,30 @@
 class Api::V1::OrganizationsController < ApplicationController
-  before_action :set_organization, only: [:show, :update]
+  before_action :set_organization, only: [:show, :update, :destroy]
   load_and_authorize_resource
 
   # include AccessDeniedHandler
 
   def index
-    @organizations = Organization.all
-    render json: @organizations
+    # Check user role and retrieve organizations accordingly
+    if current_user.super_admin?
+      @organizations = Organization.all
+    elsif current_user.admin?
+      @organizations = Organization.where(id: current_user.organization_id)
+    end
+
+    if @organizations
+      render_paginated_response(@organizations)
+    else
+      render json: { errors: @organizations.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def show
-    # Retrieve the organization
-    render json: @organization
+    if(params[:id] != current_user.organization_id && !current_user.super_admin?)
+      error_response('You are not authorized to view this organization', nil, :unauthorized)
+    else
+      success_response('Organization retrieved successfully', @organization.as_json(include: [:users]), :ok)
+    end
   end
 
   def update
@@ -52,7 +65,7 @@ class Api::V1::OrganizationsController < ApplicationController
   private
 
   def set_organization
-    @organization = Organization.find(params[:id])
+    @organization = current_user.super_admin? ? Organization.find(params[:id]) : Organization.find_by(id: current_user.organization_id)
   end
 
   def organization_params

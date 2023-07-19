@@ -14,9 +14,6 @@ module PaginationControllerConcern
       paginated_response[1]
     end
 
-    render json: {
-      assistances: serialized_collection,  # Use serialized collection if a serializer is provided
-      pagination: paginated_response[0][:pagination]
-    }, status: :ok
+    render json: paginated_response[0].merge(data: serialized_collection)
   end
 end

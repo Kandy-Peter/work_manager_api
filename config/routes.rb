@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get '/search', to: 'users#search'
+
+      resources :demo_requests
+
       resources :organizations do
         #****ASSISTANCES****
         resources :assistances
@@ -27,6 +30,15 @@ Rails.application.routes.draw do
 
         #****USER JOURNEY****
         get '/reports/:user_id/journeys', to: 'reports/journeys#show', as: 'journey_report'
+      end
+
+      #**** DEMO REQUESTS ****
+      namespace :requests do
+        resources :demo_requests do
+          member do
+            put 'update_demo_request_status', to: 'demo_requests#update_demo_request_status'
+          end
+        end
       end
     end
   end

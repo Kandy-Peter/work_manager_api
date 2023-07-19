@@ -4,13 +4,14 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    # define ability for simple user, admin, super_admin, manager
-    if user.persisted?
+    if user.present?
+      puts "is user super_admin? #{user.admin?}"
       organization_id = user.organization_id
       if user.super_admin?
+        puts"super_admin"
         can :manage, :all
       elsif user.admin?
-        can [:read, :update], Organization, organization_id: organization_id
+        can [:read, :update], Organization, id: organization_id
         can :manage, Department, organization_id: organization_id
         can :manage, Position, organization_id: organization_id
         can :manage, Salary, organization_id: organization_id
@@ -34,11 +35,9 @@ class Ability
         can :manage, Assistance, user_id: User.where(organization_id: organization_id)
         can :manage, [WorkDay, Activity], user_id: User.where(organization_id: organization_id)
         cannot :update_role, User
-      else
-        # Unauthorized user or unauthenticated request
-        cannot :manage, :all
-        cannot :read, :all
       end
+    else
+      can :create, DemoRequest
     end
   end
 end
