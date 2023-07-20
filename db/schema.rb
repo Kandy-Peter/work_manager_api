@@ -44,7 +44,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_19_100549) do
     t.string "company_website"
     t.string "how_did_you_hear_about_us"
     t.integer "status", default: 0
-    t.datetime "scheduled_at"
+    t.datetime "scheduled_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

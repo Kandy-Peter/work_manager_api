@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/'
   mount Rswag::Api::Engine => '/api-docs'
 
+  mount ActionCable.server => '/cable'
+
   namespace :api do
     namespace :v1 do
       get '/search', to: 'users#search'
